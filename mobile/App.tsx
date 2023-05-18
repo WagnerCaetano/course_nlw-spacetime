@@ -1,20 +1,35 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StatusBar } from "expo-status-bar";
+import { ImageBackground, Text } from "react-native";
+
+import {
+  useFonts,
+  Roboto_400Regular,
+  Roboto_700Bold,
+} from "@expo-google-fonts/roboto";
+
+import { BaiJamjuree_700Bold } from "@expo-google-fonts/bai-jamjuree";
+
+import blurBg from "./assets/bg-blur.png";
 
 export default function App() {
+  const [hasLoadedFonts] = useFonts({
+    Roboto_400Regular,
+    Roboto_700Bold,
+    BaiJamjuree_700Bold,
+  });
+
+  if (!hasLoadedFonts) {
+    return null;
+  }
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <ImageBackground
+      className="relative flex-1 items-center bg-gray-900"
+      imageStyle={{ position: "absolute", left: "-100" }}
+      source={blurBg}
+    >
+      <Text className="font-title text-5xl text-gray-50">Rocketseat</Text>
+      <StatusBar style="light" translucent />
+    </ImageBackground>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
