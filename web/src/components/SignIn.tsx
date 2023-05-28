@@ -1,3 +1,5 @@
+import { User } from "lucide-react";
+
 export default function SignIn() {
   return (
     <a
