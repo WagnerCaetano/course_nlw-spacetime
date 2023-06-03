@@ -21,7 +21,7 @@ export async function memoriesRoutes(app: FastifyInstance) {
       return {
         id: memory.memoryId,
         coverUrl: memory.coverUrl,
-        content: memory.content.substring(0, 100) + "...",
+        excerpt: memory.content.substring(0, 115).concat("..."),
         createdAt: memory.createdAt,
       };
     });
@@ -41,7 +41,7 @@ export async function memoriesRoutes(app: FastifyInstance) {
     });
 
     if (!memory.isPublic && memory.userId !== request.user.sub) {
-      throw reply.status(401).send();
+      return reply.status(401).send();
     }
 
     return memory;
@@ -49,20 +49,22 @@ export async function memoriesRoutes(app: FastifyInstance) {
 
   app.post("/memories", async (request) => {
     const bodySchema = z.object({
-      coverUrl: z.string().url(),
       content: z.string(),
-      isPublic: z.boolean().default(false),
+      coverUrl: z.string(),
+      isPublic: z.coerce.boolean().default(false),
     });
-    const { coverUrl, content, isPublic } = bodySchema.parse(request.body);
+
+    const { content, coverUrl, isPublic } = bodySchema.parse(request.body);
 
     const memory = await prisma.memory.create({
       data: {
-        coverUrl,
         content,
+        coverUrl,
         isPublic,
         userId: request.user.sub,
       },
     });
+
     return memory;
   });
 
@@ -74,11 +76,12 @@ export async function memoriesRoutes(app: FastifyInstance) {
     const { id } = paramsSchema.parse(request.params);
 
     const bodySchema = z.object({
-      coverUrl: z.string().url(),
       content: z.string(),
-      isPublic: z.boolean().default(false),
+      coverUrl: z.string(),
+      isPublic: z.coerce.boolean().default(false),
     });
-    const { coverUrl, content, isPublic } = bodySchema.parse(request.body);
+
+    const { content, coverUrl, isPublic } = bodySchema.parse(request.body);
 
     let memory = await prisma.memory.findUniqueOrThrow({
       where: {
@@ -86,8 +89,8 @@ export async function memoriesRoutes(app: FastifyInstance) {
       },
     });
 
-    if (memory?.userId !== request.user.sub) {
-      throw reply.status(401).send();
+    if (memory.userId !== request.user.sub) {
+      return reply.status(401).send();
     }
 
     memory = await prisma.memory.update({
@@ -95,8 +98,8 @@ export async function memoriesRoutes(app: FastifyInstance) {
         memoryId: id,
       },
       data: {
-        coverUrl,
         content,
+        coverUrl,
         isPublic,
       },
     });
@@ -117,8 +120,8 @@ export async function memoriesRoutes(app: FastifyInstance) {
       },
     });
 
-    if (memory?.userId !== request.user.sub) {
-      throw reply.status(401).send();
+    if (memory.userId !== request.user.sub) {
+      return reply.status(401).send();
     }
 
     await prisma.memory.delete({

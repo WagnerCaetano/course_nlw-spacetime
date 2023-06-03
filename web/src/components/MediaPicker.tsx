@@ -1,20 +1,20 @@
-'use client'
+"use client";
 
-import { ChangeEvent, useState } from 'react'
+import { ChangeEvent, useState } from "react";
 
 export function MediaPicker() {
-  const [preview, setPreview] = useState<string | null>(null)
+  const [preview, setPreview] = useState<string | null>(null);
 
   function onFileSelected(event: ChangeEvent<HTMLInputElement>) {
-    const { files } = event.target
+    const { files } = event.target;
 
     if (!files) {
-      return
+      return;
     }
 
-    const previewURL = URL.createObjectURL(files[0])
+    const previewURL = URL.createObjectURL(files[0]);
 
-    setPreview(previewURL)
+    setPreview(previewURL);
   }
 
   return (
@@ -29,7 +29,6 @@ export function MediaPicker() {
       />
 
       {preview && (
-        // eslint-disable-next-line
         <img
           src={preview}
           alt=""
@@ -37,5 +36,5 @@ export function MediaPicker() {
         />
       )}
     </>
-  )
+  );
 }
